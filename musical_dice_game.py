@@ -1,4 +1,4 @@
-# NAME: 
+# NAME: Nick Fabio
 # netid: 
 # STUDENT ID: 
 # 
@@ -68,19 +68,22 @@ trio_table = [tm01, tm02, tm03, tm04, tm05, tm06, tm07, tm08,
 # portion of Mozart's Musical Dice Game.
 # Example: for minuet measure 72, return "mozart/M72.wav"
 def make_minuet_filename(mmid):
-    return -1
+   return f"music files/M{mmid}.wav"
 
 # This function takes a string as an argument and constructs a string that names
 # one of the wav audio files that contains a measure of music for the trio
 # portion of Mozart's Musical Dice Game.
 # Example: for trio measure 14, return "mozart/T14.wav"
 def make_trio_filename(tmid):
-    return -1
+    return f"music files/T{tmid}.wav"
 
 # This function takes a single interger, named 'num' as its argument. It
 # generates the result of rolling 'num' many 6-sided dice.
 def dice_roll_sum(num):
-    return -1
+    total = 0
+    for _ in range(num):
+        total += random.randint(1, 6)
+    return total
 
 # Inside this main function you will randomly select 16 measures from the minuet
 # table, one from each column of the minuet table, and then randomly select 16
@@ -96,13 +99,39 @@ def compose_waltz():
     # For each column, simulate rolling 2 dice, and use the result as an index 
     # into the column
     # Append the selected measure number to the list
-    #
+
+    #Code Start:
+    minuet_selections = []
+    for column in minuet_table:
+        roll = dice_roll_sum(2)
+        minuet_selections.append(column[roll])
+
     # Create an empty list to store selection from the trio table
     # Loop over trio_table
     # For each column, simulate 1 die, and use the result as index into that 
     # column
     # Append the selected measure number to the list
-    #
+
+    trio_selections = []
+    for column in trio_table:
+        roll = dice_roll_sum(1)
+        trio_selections.append(column[roll])
+
+    for measure in minuet_selections:
+        filename = make_minuet_filename(measure)
+        wave_file = simpleaudio.WaveObject.from_wave_file(filename)
+        player = wave_file.play()
+        player.wait_done()
+
+    for measure in trio_selections:
+        filename = make_trio_filename(measure)
+        wave_file = simpleaudio.WaveObject.from_wave_file(filename)
+        player = wave_file.play()
+        player.wait_done()
+
+    return minuet_selections, trio_selections
+
+    
     # You should now have two lists: selections from minuet_table, selections 
     # from the trio table
     #
@@ -124,8 +153,6 @@ def compose_waltz():
     # You can accomplish this same task using fewer lists and fewer loops. Feel
     # free to try out some variations to see how else you might complete the
     # project in other ways.
-    
-    return -1
 
 if __name__ == "__main__":
     compose_waltz()
